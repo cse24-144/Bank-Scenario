@@ -5,16 +5,14 @@ public class Customer {
     public String SurName;
     public String Address;
     public int BankId;
-    public static int NoOfAccounts;
+    public int NoOfAccounts;
     public ArrayList<Account> Accounts = new ArrayList<Account>();
     private String Password;
-    public Customer(String FirstName, String SurName, String Address, int BankId, ArrayList<Account> Accounts) {
+    public Customer(String FirstName, String SurName, String Address, int BankId) {
         this.FirstName = FirstName;
         this.SurName = SurName;
         this.Address = Address;
         this.BankId = BankId;
-        this.Accounts = Accounts;
-        NoOfAccounts += 1;
     }
     public String getFirstName(){
         return FirstName;
@@ -44,8 +42,8 @@ public class Customer {
     public void setBankId(int BankId){
         this.BankId = BankId;
     }
-    public static void setNoOfAccounts(int noOfAccounts) {NoOfAccounts = noOfAccounts;}
-    public void setAccounts(ArrayList<Account> Accounts){this.Accounts = Accounts;}
+    public void setNoOfAccounts(int noOfAccounts) {this.NoOfAccounts = noOfAccounts;}
+    public void setAccounts(ArrayList<Account> Accounts){}
     public void setPassword(String Password) {this.Password = Password;}
 
 

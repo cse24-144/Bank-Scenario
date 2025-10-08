@@ -1,12 +1,12 @@
 public class InvestmentAccount extends Account implements MonthlyInterest, Withdraw {
 
-    private final double InvsmtMonthlyInterestRate = 0.05;
-    public InvestmentAccount(int AccountNumber, double Balance, String Branch) {
-        super(AccountNumber, Balance, Branch);
+    public InvestmentAccount(int AccountNumber, double Balance, String Branch, Customer Customer) {
+            super(AccountNumber, Balance, Branch, Customer);
     }
 
     public void AddMonthlyInterest() {
-        Balance += Balance*InvsmtMonthlyInterestRate;
+        double invsmtMonthlyInterestRate = 0.05;
+        Balance += Balance* invsmtMonthlyInterestRate;
     }
     public void Withdraw(double Amount) {
         Balance -= Amount;

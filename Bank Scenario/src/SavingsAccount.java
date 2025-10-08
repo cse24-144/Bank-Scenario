@@ -1,11 +1,11 @@
 public class SavingsAccount extends Account implements MonthlyInterest {
 
-    private final double SvgsMonthlyInterestRate = 0.0005;
-    public SavingsAccount(int AccountNumber, double Balance, String Branch) {
-        super(AccountNumber, Balance, Branch);
+    public SavingsAccount(int AccountNumber, double Balance, String Branch, Customer Customer) {
+        super(AccountNumber, Balance, Branch, Customer);
     }
 
     public void AddMonthlyInterest() {
-        Balance += Balance*SvgsMonthlyInterestRate;
+        double svgsMonthlyInterestRate = 0.0005;
+        Balance += Balance* svgsMonthlyInterestRate;
     }
 }
