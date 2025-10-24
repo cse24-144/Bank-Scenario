@@ -5,14 +5,15 @@ import java.util.ArrayList;
 public class Customer {
     public String FirstName;
     public String SurName;
+    private String Password;
     public String Address;
     public int BankId;
     public int NoOfAccounts;
     public ArrayList<Account> Accounts = new ArrayList<Account>();
-    private String Password;
-    public Customer(String FirstName, String SurName, String Address, int BankId) {
+    public Customer(String FirstName, String SurName, String Password, String Address, int BankId) {
         this.FirstName = FirstName;
         this.SurName = SurName;
+        this.Password = Password;
         this.Address = Address;
         this.BankId = BankId;
     }

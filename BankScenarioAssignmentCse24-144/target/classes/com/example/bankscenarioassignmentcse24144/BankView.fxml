@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-
 <SplitPane dividerPositions="0.2" prefHeight="320.0" prefWidth="624.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankscenarioassignmentcse24144.StartUpController">
    <items>
       <BorderPane prefHeight="200.0" prefWidth="200.0">
@@ -22,6 +21,9 @@
          <center>
             <Label fx:id="TxtStatus" text="Not Logged In" BorderPane.alignment="CENTER" />
          </center>
+         <bottom>
+            <Button fx:id="BtnLogOut" mnemonicParsing="false" onAction="#BtnLogOutClick" text="Log Out" BorderPane.alignment="CENTER" />
+         </bottom>
       </BorderPane>
       <Pane>
          <children>
@@ -36,23 +38,22 @@
                         <TextField fx:id="TxtFieldSurname" layoutX="145.0" layoutY="95.0" promptText="Jackerson" />
                         <TextField fx:id="TxtFieldPassword" layoutX="145.0" layoutY="130.0" promptText="J@Ck#rS0n" />
                         <Button fx:id="BtnLogin" layoutX="145.0" layoutY="165.0" mnemonicParsing="false" onAction="#BtnLoginClick" text="Login" />
-                     <Button fx:id="BtnLoginBankManager" layoutX="145.0" layoutY="222.0" mnemonicParsing="false" onAction="#BtnLoginBankManagerClick" text="Login as Bank Manager" />
                     </Pane>
                 </Tab>
                <Tab text="Create New User">
                  <content>
                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <children>
-                           <Button layoutX="375.0" layoutY="248.0" mnemonicParsing="false" text="Create New User" />
+                           <Button fx:id="BtnNewUser" layoutX="375.0" layoutY="248.0" mnemonicParsing="false" onAction="#BtnNewUserClick" text="Create New User" />
                            <Label layoutX="138.0" layoutY="33.0" text="First Name" />
                            <Label layoutX="143.0" layoutY="72.0" text="Surname" />
                            <Label layoutX="142.0" layoutY="108.0" text="Password" />
-                           <TextField layoutX="207.0" layoutY="29.0" promptText="Jack" />
-                           <TextField layoutX="207.0" layoutY="68.0" promptText="Jackerson" />
-                           <TextField layoutX="207.0" layoutY="104.0" promptText="J@Ck#rS0n" />
+                           <TextField fx:id="TxtFNameNewUser" layoutX="207.0" layoutY="29.0" promptText="Jack" />
+                           <TextField fx:id="TxtSNameNewUser" layoutX="207.0" layoutY="68.0" promptText="Jackerson" />
+                           <TextField fx:id="TxtPasswordNewUser" layoutX="207.0" layoutY="104.0" promptText="J@Ck#rS0n" />
                            <Label layoutX="143.0" layoutY="148.0" text="Address" />
-                           <TextField layoutX="207.0" layoutY="144.0" promptText="JackStreet 123" />
-                           <TextField layoutX="207.0" layoutY="176.0" promptText="245669" />
+                           <TextField fx:id="TxtAddressNewUser" layoutX="207.0" layoutY="144.0" promptText="JackStreet 123" />
+                           <TextField fx:id="TxtBankIdNewUser" layoutX="207.0" layoutY="176.0" promptText="245669" />
                            <Label layoutX="147.0" layoutY="180.0" text="Bank Id" />
                            <Label layoutX="76.0" layoutY="129.0" text="Enter following details if only customer" textFill="#9d9d9d">
                               <font>
@@ -71,7 +72,7 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <ListView layoutX="18.0" layoutY="44.0" prefHeight="200.0" prefWidth="340.0" />
+                              <ListView fx:id="ListCustomerAccounts" layoutX="18.0" layoutY="45.0" prefHeight="229.0" prefWidth="461.0" />
                               <Label layoutX="18.0" layoutY="14.0" text="List Of Your Accounts" />
                            </children>
                         </AnchorPane>
@@ -82,23 +83,23 @@
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <Label layoutX="120.0" layoutY="43.0" text="Account Number" />
-                              <TextField layoutX="233.0" layoutY="39.0" promptText="2167" />
+                              <TextField fx:id="TxtAccNumberNewAcc" layoutX="233.0" layoutY="39.0" promptText="2167" />
                               <Label layoutX="120.0" layoutY="72.0" text="Balance" />
                               <Label layoutX="120.0" layoutY="105.0" text="Branch" />
                               <Label layoutX="122.0" layoutY="144.0" text="Company Name" />
                               <Label layoutX="122.0" layoutY="173.0" text="Company Address" />
-                              <TextField layoutX="233.0" layoutY="68.0" promptText="6769.42" />
-                              <TextField layoutX="233.0" layoutY="101.0" promptText="FNB Gabarone" />
+                              <TextField fx:id="TxtBalanceNewAcc" layoutX="233.0" layoutY="68.0" promptText="6769.42" />
+                              <TextField fx:id="TxtBranchNewAcc" layoutX="233.0" layoutY="101.0" promptText="FNB Gabarone" />
                               <Label layoutX="86.0" layoutY="126.0" text="Enter detail below if you want to make a cheque account" textFill="#868686">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </Label>
-                              <TextField layoutX="233.0" layoutY="140.0" promptText="FromSoftware Inc." />
-                              <TextField layoutX="233.0" layoutY="169.0" promptText="Limveld Area" />
-                              <Button layoutX="16.0" layoutY="215.0" mnemonicParsing="false" text="Create Savings Account" />
-                              <Button layoutX="167.0" layoutY="215.0" mnemonicParsing="false" text="Create Investment Account" />
-                              <Button layoutX="336.0" layoutY="215.0" mnemonicParsing="false" text="Create Cheque Account" />
+                              <TextField fx:id="TxtCompanyNameNewAcc" layoutX="233.0" layoutY="140.0" promptText="FromSoftware Inc." />
+                              <TextField fx:id="TxtCompanyAddressNewAcc" layoutX="233.0" layoutY="169.0" promptText="Limveld Area" />
+                              <Button fx:id="BtnNewAccSvgs" layoutX="16.0" layoutY="215.0" mnemonicParsing="false" onAction="#BtnNewAccSvgsClick" text="Create Savings Account" />
+                              <Button fx:id="BtnNewAccInvs" layoutX="167.0" layoutY="215.0" mnemonicParsing="false" onAction="#BtnNewAccInvsClick" text="Create Investment Account" />
+                              <Button fx:id="BtnNewAccCheque" layoutX="336.0" layoutY="215.0" mnemonicParsing="false" onAction="#BtnNewAccChequeClick" text="Create Cheque Account" />
                            </children>
                         </AnchorPane>
                   </content>
@@ -108,11 +109,11 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <Label layoutX="133.0" layoutY="59.0" text="Account Number" />
-                              <TextField layoutX="238.0" layoutY="55.0" promptText="2167" />
+                              <TextField fx:id="TxtAccNumberDW" layoutX="238.0" layoutY="55.0" promptText="2167" />
                               <Label layoutX="137.0" layoutY="99.0" text="Balance" />
-                              <TextField layoutX="238.0" layoutY="95.0" promptText="6769.42" />
-                              <Button layoutX="336.0" layoutY="144.0" mnemonicParsing="false" text="Deposit" />
-                              <Button layoutX="132.0" layoutY="144.0" mnemonicParsing="false" text="Withdraw" />
+                              <TextField fx:id="TxtBalanceDW" layoutX="238.0" layoutY="95.0" promptText="6769.42" />
+                              <Button fx:id="BtnDeposit" layoutX="336.0" layoutY="144.0" mnemonicParsing="false" onAction="#BtnDepositClick" text="Deposit" />
+                              <Button fx:id="BtnWithdraw" layoutX="132.0" layoutY="144.0" mnemonicParsing="false" onAction="#BtnWithdrawClick" text="Withdraw" />
                               <Label layoutX="14.0" layoutY="260.0" text="Note: Can NOT withdraw from savings account" textFill="#868686">
                                  <font>
                                     <Font size="9.0" />
@@ -127,22 +128,22 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <Label layoutX="133.0" layoutY="59.0" text="Account Number" />
-                              <TextField layoutX="238.0" layoutY="55.0" promptText="2167" />
-                              <Button layoutX="289.0" layoutY="144.0" mnemonicParsing="false" text="Delete Account" />
+                              <TextField fx:id="TxtAccNumberDeleteAcc" layoutX="238.0" layoutY="55.0" promptText="2167" />
+                              <Button fx:id="BtnDeleteAcc" layoutX="289.0" layoutY="144.0" mnemonicParsing="false" onAction="#BtnDeleteAccClick" text="Delete Account" />
                            </children>
                         </AnchorPane>
                     </content>
                   </Tab>
               </tabs>
             </TabPane>
-            <TabPane fx:id="TabPaneBankManager" prefHeight="317.0" prefWidth="494.0" tabClosingPolicy="UNAVAILABLE" visible="false">
+            <TabPane fx:id="TabPaneBankManager" prefHeight="461.0" prefWidth="751.0" tabClosingPolicy="UNAVAILABLE" visible="false">
               <tabs>
                 <Tab text="Home">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <ListView layoutX="26.0" layoutY="44.0" prefHeight="200.0" prefWidth="387.0" />
-                              <Label layoutX="26.0" layoutY="14.0" text="List Of All Accounts" />
+                              <ListView fx:id="ListAllAccs" layoutX="18.0" layoutY="45.0" prefHeight="228.0" prefWidth="460.0" />
+                              <Label layoutX="18.0" layoutY="14.0" text="List Of All Accounts" />
                            </children>
                         </AnchorPane>
                   </content>
@@ -152,8 +153,8 @@
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <Label layoutX="119.0" layoutY="43.0" text="Account Number" />
-                              <TextField layoutX="222.0" layoutY="39.0" promptText="2167" />
-                              <Button layoutX="228.0" layoutY="80.0" mnemonicParsing="false" text="Add Interest to Account" />
+                              <TextField fx:id="TxtAccNumberInterest" layoutX="222.0" layoutY="39.0" promptText="2167" />
+                              <Button fx:id="BtnApplyInterest" layoutX="228.0" layoutY="80.0" mnemonicParsing="false" onAction="#BtnApplyInterestClick" text="Add Interest to Account" />
                            </children>
                         </AnchorPane>
                   </content>

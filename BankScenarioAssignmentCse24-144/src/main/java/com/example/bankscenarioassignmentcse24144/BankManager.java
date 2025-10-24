@@ -3,12 +3,12 @@ package com.example.bankscenarioassignmentcse24144;
 public class BankManager {
     public String FirstName;
     public String SurName;
-    private int password;
+    private String Password;
 // meant to add interest to accounts
-    public BankManager(String FirstName, String SurName, int password) {
+    public BankManager(String FirstName, String SurName, String Password) {
         this.FirstName = FirstName;
         this.SurName = SurName;
-        this.password = password;
+        this.Password = Password;
     }
     public String getFirstName() {
         return FirstName;
@@ -22,10 +22,10 @@ public class BankManager {
     public void setSurName(String surName) {
         SurName = surName;
     }
-    public int getPassword() {
-        return password;
+    public String getPassword() {
+        return Password;
     }
     public void setPassword(int password) {
-        this.password = password;
+        this.Password = Password;
     }
 }
