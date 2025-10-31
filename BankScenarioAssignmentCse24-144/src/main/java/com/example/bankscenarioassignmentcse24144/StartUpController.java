@@ -50,7 +50,7 @@ public class StartUpController {
     public ListView<String> ListCustomerAccounts;
     Customer CurrentCustomer;
     BankManager CurrentBankManager;
-    Boolean AccountDeleted=false;
+    Boolean AccountFound=false;
 
     @FXML
     private Label LabelLogin;
@@ -211,7 +211,7 @@ public class StartUpController {
             Error404();
         } else {
             ChequeAccount newChequeAcc = new ChequeAccount(Integer.parseInt(TxtAccNumberNewAcc.getText()),Double.parseDouble(TxtBalanceNewAcc.getText()),TxtBranchNewAcc.getText(),CurrentCustomer,TxtCompanyNameNewAcc.getText(),TxtCompanyAddressNewAcc.getText());
-            String line = newChequeAcc.getAccountNumber()+";"+newChequeAcc.getBalance()+";"+newChequeAcc.getBranch()+";"+CurrentCustomer.getFirstName();
+            String line = newChequeAcc.getAccountNumber()+";"+newChequeAcc.getBalance()+";"+newChequeAcc.getBranch()+";"+CurrentCustomer.getFirstName()+";"+newChequeAcc.getCompanyName()+";"+newChequeAcc.getCompanyAddress();
             try (FileWriter writer = new FileWriter("ChequeAcc.txt", true)) {
                 writer.write( line + System.lineSeparator());
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -232,37 +232,211 @@ public class StartUpController {
     }
         //incase i don't finish reminder logic is write everything except the account number's data then update and rewrite
     public void BtnDepositClick(ActionEvent actionEvent) {
-
+        if (TxtAccNumberDW.getText().isEmpty()){
+            Error404();
+        }else{
+            String line;
+            ArrayList<String> lines = new ArrayList<>();
+            int count=0;
+            try (BufferedReader reader = new BufferedReader(new FileReader("ChequeAcc.txt"))) {
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(";");
+                    if (TxtAccNumberDW.getText().equals(parts[0])) {
+                        AccountFound = true;
+                        ChequeAccount CurrentAcc = new ChequeAccount(Integer.parseInt(parts[0]),Double.parseDouble(parts[1]),parts[2],CurrentCustomer,parts[4],parts[5]);
+                        CurrentAcc.deposit(Double.parseDouble(TxtBalanceDW.getText()));
+                        parts[1]= String.valueOf(CurrentAcc.getBalance());
+                        String newLine = parts[0]+";"+parts[1]+";"+parts[2]+";"+parts[3]+";"+parts[4]+";"+parts[5];
+                        lines.add(newLine);
+                    } else {
+                        lines.add(line);
+                        count += 1;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (FileWriter writer = new FileWriter("ChequeAcc.txt", false)) {
+                for (String l:lines){
+                    writer.write(l + System.lineSeparator());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(depositAcc("InvestmentAcc.txt")||depositAcc("SavingsAcc.txt")||AccountFound){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText("Account:" + TxtAccNumberDW.getText() + " was successfully deposited into");
+                alert.showAndWait();
+                TxtAccNumberDW.clear();
+                TxtBalanceDW.clear();
+                AccountFound = false;
+                loadAccountsFromFile();
+            }
+            else{Error67();}
+        }
     }
 
     public void BtnWithdrawClick(ActionEvent actionEvent) {
-
+        if (TxtAccNumberDW.getText().isEmpty()){
+            Error404();
+        }else{
+            String line;
+            ArrayList<String> lines = new ArrayList<>();
+            int count=0;
+            try (BufferedReader reader = new BufferedReader(new FileReader("ChequeAcc.txt"))) {
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(";");
+                    if (TxtAccNumberDW.getText().equals(parts[0])) {
+                        AccountFound = true;
+                        ChequeAccount CurrentAcc = new ChequeAccount(Integer.parseInt(parts[0]),Double.parseDouble(parts[1]),parts[2],CurrentCustomer,parts[4],parts[5]);
+                        CurrentAcc.Withdraw(Double.parseDouble(TxtBalanceDW.getText()));
+                        parts[1]= String.valueOf(CurrentAcc.getBalance());
+                        String newLine = parts[0]+";"+parts[1]+";"+parts[2]+";"+parts[3]+";"+parts[4]+";"+parts[5];
+                        lines.add(newLine);
+                    } else {
+                        lines.add(line);
+                        count += 1;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (FileWriter writer = new FileWriter("ChequeAcc.txt", false)) {
+                for (String l:lines){
+                    writer.write(l + System.lineSeparator());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (BufferedReader reader = new BufferedReader(new FileReader("InvestmentAcc.txt"))) {
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(";");
+                    if (TxtAccNumberDW.getText().equals(parts[0])) {
+                        AccountFound = true;
+                        InvestmentAccount CurrentAcc = new InvestmentAccount(Integer.parseInt(parts[0]),Double.parseDouble(parts[1]),parts[2],CurrentCustomer);
+                        CurrentAcc.Withdraw(Double.parseDouble(TxtBalanceDW.getText()));
+                        parts[1]= String.valueOf(CurrentAcc.getBalance());
+                        String newLine = parts[0]+";"+parts[1]+";"+parts[2]+";"+parts[3];
+                        lines.add(newLine);
+                    } else {
+                        lines.add(line);
+                        count += 1;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (FileWriter writer = new FileWriter("InvestmentAcc.txt", false)) {
+                for (String l:lines){
+                    writer.write(l + System.lineSeparator());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(AccountFound){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText("Account:" + TxtAccNumberDW.getText() + " was successfully withdrewn from");
+                alert.showAndWait();
+                TxtAccNumberDW.clear();
+                TxtBalanceDW.clear();
+                AccountFound = false;
+                loadAccountsFromFile();
+            }
+            else{Error67();}
+        }
     }
 
     public void BtnDeleteAccClick(ActionEvent actionEvent) {
         if (TxtAccNumberDeleteAcc.getText().isEmpty()){
             Error404();
         }else{
-            deleteAcc("InvestmentAcc.txt");
-            deleteAcc("SavingsAcc.txt");
-            deleteAcc("ChequeAcc.txt");
-            if (AccountDeleted=true) {
+            if(deleteAcc("InvestmentAcc.txt")||deleteAcc("SavingsAcc.txt")||deleteAcc("ChequeAcc.txt")){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");
                 alert.setHeaderText(null);
                 alert.setContentText("Account:" + TxtAccNumberDeleteAcc.getText() + " was successfully deleted");
                 alert.showAndWait();
                 TxtAccNumberDeleteAcc.clear();
-                AccountDeleted = false;
+                AccountFound = false;
                 loadAccountsFromFile();
-            } else {
-                Error67();
             }
+            else{Error67();}
         }
     }
 
     public void BtnApplyInterestClick(ActionEvent actionEvent) {
-
+        if (TxtAccNumberInterest.getText().isEmpty()){
+            Error404();
+        }else{
+            String line;
+            ArrayList<String> lines = new ArrayList<>();
+            int count=0;
+            try (BufferedReader reader = new BufferedReader(new FileReader("InvestmentAcc.txt"))) {
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(";");
+                    if (TxtAccNumberInterest.getText().equals(parts[0])) {
+                        AccountFound = true;
+                        InvestmentAccount CurrentAcc = new InvestmentAccount(Integer.parseInt(parts[0]),Double.parseDouble(parts[1]),parts[2],CurrentCustomer);
+                        CurrentAcc.AddMonthlyInterest();
+                        parts[1]= String.valueOf(CurrentAcc.getBalance());
+                        String newLine = parts[0]+";"+parts[1]+";"+parts[2]+";"+parts[3];
+                        lines.add(newLine);
+                    } else {
+                        lines.add(line);
+                        count += 1;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (FileWriter writer = new FileWriter("InvestmentAcc.txt", false)) {
+                for (String l:lines){
+                    writer.write(l + System.lineSeparator());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (BufferedReader reader = new BufferedReader(new FileReader("SavingsAcc.txt"))) {
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(";");
+                    if (TxtAccNumberInterest.getText().equals(parts[0])) {
+                        AccountFound = true;
+                        SavingsAccount CurrentAcc = new SavingsAccount(Integer.parseInt(parts[0]),Double.parseDouble(parts[1]),parts[2],CurrentCustomer);
+                        CurrentAcc.AddMonthlyInterest();
+                        parts[1]= String.valueOf(CurrentAcc.getBalance());
+                        String newLine = parts[0]+";"+parts[1]+";"+parts[2]+";"+parts[3];
+                        lines.add(newLine);
+                    } else {
+                        lines.add(line);
+                        count += 1;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (FileWriter writer = new FileWriter("SavingsAcc.txt", false)) {
+                for (String l:lines){
+                    writer.write(l + System.lineSeparator());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(AccountFound){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText("Account:" + TxtAccNumberInterest.getText() + " has successfully had interest added");
+                alert.showAndWait();
+                TxtAccNumberInterest.clear();
+                AccountFound = false;
+                loadAllAccsFromFile();
+            }
+            else{Error67();}
+        }
     }
 
     public void BtnLogOutClick(ActionEvent actionEvent) {
@@ -293,10 +467,10 @@ public class StartUpController {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
-                if (parts.length == 4) {
+                if (parts.length == 6) {
                     if (parts[3].equals(CurrentCustomer.getFirstName())) {
-                        String display = String.format("Account Number:%s Balance:%s Branch:%s Account Type:Cheque",
-                                parts[0], parts[1], parts[2]);
+                        String display = String.format("Account Number:%s Balance:%s Branch:%s Account Type:Cheque Company Name:%s Company Address:%s ",
+                                parts[0], parts[1], parts[2], parts[4], parts[5]);
                         lines.add(display);
                     }
                 }
@@ -343,9 +517,9 @@ public class StartUpController {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
-                if (parts.length == 4) {
-                        String display = String.format("Account Number:%s Balance:%s Branch:%s Account Type:Cheque",
-                                parts[0], parts[1], parts[2]);
+                if (parts.length == 6) {
+                        String display = String.format("Account Number:%s Balance:%s Branch:%s Account Type:Cheque  Company Name:%s Company Address:%s ",
+                                parts[0], parts[1], parts[2], parts[4], parts[5]);
                         lines.add(display);
                 }
             }
@@ -380,7 +554,7 @@ public class StartUpController {
         }
         ListAllAccs.setItems(FXCollections.observableArrayList(lines));
     }
-    public void deleteAcc(String filename){
+    public boolean deleteAcc(String filename){
         String line;
         ArrayList<String> lines = new ArrayList<>();
         int count=0;
@@ -388,7 +562,7 @@ public class StartUpController {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
                 if (TxtAccNumberDeleteAcc.getText().equals(parts[0])) {
-                    AccountDeleted = true;
+                    AccountFound = true;
                 } else {
                     lines.add(line);
                     count += 1;
@@ -404,5 +578,38 @@ public class StartUpController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return AccountFound;
+    }
+
+    public boolean depositAcc(String filename){
+        String line;
+        ArrayList<String> lines = new ArrayList<>();
+        int count=0;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+                if (TxtAccNumberDW.getText().equals(parts[0])) {
+                    AccountFound = true;
+                    SavingsAccount CurrentAcc = new SavingsAccount(Integer.parseInt(parts[0]),Double.parseDouble(parts[1]),parts[2],CurrentCustomer);
+                    CurrentAcc.deposit(Double.parseDouble(TxtBalanceDW.getText()));
+                    parts[1]= String.valueOf(CurrentAcc.getBalance());
+                    String newLine = parts[0]+";"+parts[1]+";"+parts[2]+";"+parts[3];
+                    lines.add(newLine);
+                } else {
+                    lines.add(line);
+                    count += 1;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (FileWriter writer = new FileWriter(filename, false)) {
+            for (String l:lines){
+                writer.write(l + System.lineSeparator());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return AccountFound;
     }
 }

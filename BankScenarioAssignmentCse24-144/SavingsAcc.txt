@@ -1,2 +1,8 @@
+3213;220.5;Absa;Juck
+1245;7315.35;Stanbic;Juck
+3213;220.5;Absa;Juck
+1245;6970.4835;Stanbic;Juck
+3213;210.105;Absa;Juck
+1245;6970.4835;Stanbic;Juck
 1922;694.20;Phakalane;D
 6967;2000.0;ABSA North;Juck
