@@ -1,2 +1,3 @@
-3213;220.5;Absa;Juck
-1245;7315.35;Stanbic;Juck
+3267;220.5;Absa;Juck
+1333;1982.7675;Stanbic;Juck
+909;525.0;FNB Gabarone;Jill

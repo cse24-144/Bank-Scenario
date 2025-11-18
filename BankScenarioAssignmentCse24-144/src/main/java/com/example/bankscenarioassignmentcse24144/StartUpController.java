@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class StartUpController {
     //All items
     public TabPane TabPaneLogin;
@@ -48,7 +47,7 @@ public class StartUpController {
     public Button BtnLogOut;
     public ListView<String> ListAllAccs;
     public ListView<String> ListCustomerAccounts;
-    Customer CurrentCustomer;
+    Customer CurrentCustomer = new Customer("Null","Nully","Null123","Nullstreet",321);
     BankManager CurrentBankManager;
     Boolean AccountFound=false;
 
@@ -163,6 +162,8 @@ public class StartUpController {
     public void BtnNewAccSvgsClick(ActionEvent actionEvent) {
         if (TxtAccNumberNewAcc.getText().isEmpty() || TxtBalanceNewAcc.getText().isEmpty() || TxtBranchNewAcc.getText().isEmpty()){
             Error404();
+        } else if (Double.parseDouble(TxtBalanceNewAcc.getText()) < 0){
+            Error67();
         } else {
             SavingsAccount newSavingsAcc = new SavingsAccount(Integer.parseInt(TxtAccNumberNewAcc.getText()),Double.parseDouble(TxtBalanceNewAcc.getText()),TxtBranchNewAcc.getText(),CurrentCustomer);
             String line = newSavingsAcc.getAccountNumber()+";"+newSavingsAcc.getBalance()+";"+newSavingsAcc.getBranch()+";"+CurrentCustomer.getFirstName();
@@ -186,7 +187,9 @@ public class StartUpController {
     public void BtnNewAccInvsClick(ActionEvent actionEvent) {
         if (TxtAccNumberNewAcc.getText().isEmpty() || TxtBalanceNewAcc.getText().isEmpty() || TxtBranchNewAcc.getText().isEmpty()){
             Error404();
-        } else {
+        } else if (Double.parseDouble(TxtBalanceNewAcc.getText()) < 500){
+            Error67();
+        }else {
             InvestmentAccount newInvestmentAcc = new InvestmentAccount(Integer.parseInt(TxtAccNumberNewAcc.getText()),Double.parseDouble(TxtBalanceNewAcc.getText()),TxtBranchNewAcc.getText(),CurrentCustomer);
             String line = newInvestmentAcc.getAccountNumber()+";"+newInvestmentAcc.getBalance()+";"+newInvestmentAcc.getBranch()+";"+CurrentCustomer.getFirstName();
             try (FileWriter writer = new FileWriter("InvestmentAcc.txt", true)) {
@@ -209,6 +212,8 @@ public class StartUpController {
     public void BtnNewAccChequeClick(ActionEvent actionEvent) {
         if (TxtAccNumberNewAcc.getText().isEmpty() || TxtBalanceNewAcc.getText().isEmpty() || TxtBranchNewAcc.getText().isEmpty() || TxtCompanyNameNewAcc.getText().isEmpty() || TxtCompanyAddressNewAcc.getText().isEmpty()){
             Error404();
+        } else if (Double.parseDouble(TxtBalanceNewAcc.getText()) < 0){
+            Error67();
         } else {
             ChequeAccount newChequeAcc = new ChequeAccount(Integer.parseInt(TxtAccNumberNewAcc.getText()),Double.parseDouble(TxtBalanceNewAcc.getText()),TxtBranchNewAcc.getText(),CurrentCustomer,TxtCompanyNameNewAcc.getText(),TxtCompanyAddressNewAcc.getText());
             String line = newChequeAcc.getAccountNumber()+";"+newChequeAcc.getBalance()+";"+newChequeAcc.getBranch()+";"+CurrentCustomer.getFirstName()+";"+newChequeAcc.getCompanyName()+";"+newChequeAcc.getCompanyAddress();
@@ -232,7 +237,7 @@ public class StartUpController {
     }
         //incase i don't finish reminder logic is write everything except the account number's data then update and rewrite
     public void BtnDepositClick(ActionEvent actionEvent) {
-        if (TxtAccNumberDW.getText().isEmpty()){
+        if (TxtAccNumberDW.getText().isEmpty()||TxtBalanceDW.getText().isEmpty()||Double.parseDouble(TxtBalanceDW.getText()) < 0){
             Error404();
         }else{
             String line;
@@ -279,7 +284,7 @@ public class StartUpController {
     }
 
     public void BtnWithdrawClick(ActionEvent actionEvent) {
-        if (TxtAccNumberDW.getText().isEmpty()){
+        if (TxtAccNumberDW.getText().isEmpty()||Double.parseDouble(TxtBalanceDW.getText()) < 0){
             Error404();
         }else{
             String line;
@@ -288,17 +293,22 @@ public class StartUpController {
             try (BufferedReader reader = new BufferedReader(new FileReader("ChequeAcc.txt"))) {
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split(";");
-                    if (TxtAccNumberDW.getText().equals(parts[0])) {
-                        AccountFound = true;
-                        ChequeAccount CurrentAcc = new ChequeAccount(Integer.parseInt(parts[0]),Double.parseDouble(parts[1]),parts[2],CurrentCustomer,parts[4],parts[5]);
-                        CurrentAcc.Withdraw(Double.parseDouble(TxtBalanceDW.getText()));
-                        parts[1]= String.valueOf(CurrentAcc.getBalance());
-                        String newLine = parts[0]+";"+parts[1]+";"+parts[2]+";"+parts[3]+";"+parts[4]+";"+parts[5];
-                        lines.add(newLine);
-                    } else {
-                        lines.add(line);
-                        count += 1;
-                    }
+                        if (TxtAccNumberDW.getText().equals(parts[0])) {
+                            if (Double.parseDouble(TxtBalanceDW.getText()) < Double.parseDouble(parts[1])) {
+                                AccountFound = true;
+                                ChequeAccount CurrentAcc = new ChequeAccount(Integer.parseInt(parts[0]), Double.parseDouble(parts[1]), parts[2], CurrentCustomer, parts[4], parts[5]);
+                                CurrentAcc.Withdraw(Double.parseDouble(TxtBalanceDW.getText()));
+                                parts[1] = String.valueOf(CurrentAcc.getBalance());
+                                String newLine = parts[0] + ";" + parts[1] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4] + ";" + parts[5];
+                                lines.add(newLine);
+                            } else{
+                                Error67();
+                                lines.add(line);
+                            }
+                        } else {
+                            lines.add(line);
+                            count += 1;
+                        }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -310,16 +320,22 @@ public class StartUpController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            lines.clear();
             try (BufferedReader reader = new BufferedReader(new FileReader("InvestmentAcc.txt"))) {
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split(";");
                     if (TxtAccNumberDW.getText().equals(parts[0])) {
-                        AccountFound = true;
-                        InvestmentAccount CurrentAcc = new InvestmentAccount(Integer.parseInt(parts[0]),Double.parseDouble(parts[1]),parts[2],CurrentCustomer);
-                        CurrentAcc.Withdraw(Double.parseDouble(TxtBalanceDW.getText()));
-                        parts[1]= String.valueOf(CurrentAcc.getBalance());
-                        String newLine = parts[0]+";"+parts[1]+";"+parts[2]+";"+parts[3];
-                        lines.add(newLine);
+                        if (Double.parseDouble(TxtBalanceDW.getText()) < Double.parseDouble(parts[1])) {
+                            AccountFound = true;
+                            InvestmentAccount CurrentAcc = new InvestmentAccount(Integer.parseInt(parts[0]),Double.parseDouble(parts[1]),parts[2],CurrentCustomer);
+                            CurrentAcc.Withdraw(Double.parseDouble(TxtBalanceDW.getText()));
+                            parts[1]= String.valueOf(CurrentAcc.getBalance());
+                            String newLine = parts[0]+";"+parts[1]+";"+parts[2]+";"+parts[3];
+                            lines.add(newLine);
+                        } else{
+                        Error67();
+                        lines.add(line);
+                    }
                     } else {
                         lines.add(line);
                         count += 1;
@@ -400,6 +416,7 @@ public class StartUpController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            lines.clear();
             try (BufferedReader reader = new BufferedReader(new FileReader("SavingsAcc.txt"))) {
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split(";");
